@@ -1,0 +1,175 @@
+---
+title: "edX_PH525.1x_w2"
+author: "Joshua Ng"
+date: "2015/2/2"
+output: html_document
+---
+
+My course note for edX PH525.1x week 2.
+
+Probability Distribution I.
+
+```{r}
+#read.csv
+dat <- read.csv("femaleMiceWeights.csv")
+```
+
+```{r}
+#Slice Bodyweight of either chow and hf
+dat[1:12,2]
+dat[13:24,2]
+```
+
+```{r}
+#Compare means in 2 groups
+mean(dat[13:24,2]) - mean(dat[1:12,2])
+```
+
+```{r}
+#A stripchart of the weights
+s = split(dat[,2], dat[,1])
+stripchart(s, vertical=TRUE, col=1:2)
+abline(h=sapply(s, mean), col=1:2)
+```
+
+```{r}
+#Q1.1 solution
+sum(mean(s$chow) > s$hf)
+```
+
+```{r}
+#Q1.2 solution
+sum(mean(s$hf) < s$chow)
+```
+
+```{r}
+#Random sampling by size of 6
+highfat = s$hf
+set.seed(1)
+sample(highfat, 6)
+#You may turn the replace switch on if you want to.
+#sample(highfat, 6, replace=TRUE)
+```
+
+```{r}
+#How to count logical vectors; TRUE=1, FALSE=0
+sum(highfat > 30)
+#Q1.3 solution: the proportion of high fat diet mice over 30
+sum(highfat > 30) / length(highfat)
+```
+
+```{r}
+population = read.csv("femaleControlsPopulation.csv")
+set.seed(1)
+#Get 12 mice at random and compute the mean weight.
+control = sample(population[,1], 12)
+mean(control)
+```
+
+```{r}
+#pick two groups of 12 and calculate the difference in means
+n = 10000
+null = vector("numeric", n)
+for(i in 1:n){
+  control = sample(population[,1], 12)
+  treatment = sample(population[,1], 12)
+  null[i] = mean(treatment) - mean(control)
+}
+diff = mean(dat[13:24,2]) - mean(dat[1:12,2])
+mean(null-diff)
+```
+
+```{r}
+#Q2.1 solution
+mean(population[,1],1)
+```
+
+```{r}
+#More concise way of previous experiment; creating 10000 samples by using replicate()
+sampleMean = replicate(10000, mean(sample(population[,1], 12)))
+head(sampleMean)
+plot(sampleMean)
+```
+
+```{r}
+null = replicate(10000, mean(sample(population[,1], 12)) - mean(sample(population[,1], 12)))
+head(null)
+plot(null)
+```
+
+```{r}
+hist(null)
+diff = mean(dat[13:24,2]) - mean(dat[1:12,2])
+abline(v=diff, col="red")
+abline(v=-diff, col="red")
+```
+
+
+Probability Distribution II
+```{r}
+library(devtools)
+install_github("jennybc/gapminder")
+library(gapminder)
+data(gapminder)
+head(gapminder)
+```
+
+```{r}
+#Q1.1 solution
+gap2 <- gapminder[which(gapminder$year==1952),]
+mean(gap2$lifeExp<=40)
+```
+
+```{r}
+#Q1.2 solution
+mean(gap2$lifeExp<=60) - mean(gap2$lifeExp<=40)
+```
+
+```{r}
+x = gap2$lifeExp
+prop = function(q) {
+  mean(x <= q)
+}
+prop(40)
+qs = seq(from=min(x), to=max(x), length=20)
+props = sapply(qs, prop)
+plot(qs, props)
+props = sapply(qs, function(q) mean(x <= q))
+plot(ecdf(x))
+```
+
+```{r}
+library(gapminder)
+data(gapminder)
+gap2 <- gapminder[which(gapminder$year==1952),]
+p2 <- gap2$pop
+hist(p2)
+hist(log10(p2))
+```
+
+```{r}
+#Q2.1 solution
+sd(log10(p2))
+```
+
+```{r}
+#Q2.2 solution
+x <- log10(p2)
+qqnorm(x)
+z <- (x - mean(x)) / sd(x)
+qqnorm(z)
+abline(0,1)
+max(z)
+```
+
+```{r}
+F = function(q) pnorm(q, mean=mean(x), sd=sd(x))
+n = length(x)
+
+```
+
+```{r}
+
+```
+
+EOL

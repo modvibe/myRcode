@@ -1,0 +1,106 @@
+---
+title: "edX_PH525.1x_w1"
+author: "Joshua Ng"
+date: "2015/2/2"
+output: html_document
+---
+
+My course note for edX PH525.1x week 1.
+
+
+```{r}
+#read.csv
+ms <- read.csv("msleep_ggplot2.csv")
+```
+
+```{r}
+#summary()
+ms_total <- ms$sleep_total
+summary(ms_total)
+```
+
+```{r}
+#subsetting/indexing
+ms[c(1,2),] #subsetting to row 1 and 2
+ms[ms_total > 18,]  #rows where total sleep is greater than 18
+ms_total[c(1,2)]
+mean(ms[ms_total > 18,][,6])
+```
+
+```{r}
+#plot() and logarithmic order
+plot(ms$brainwt, ms$sleep_total)
+plot(ms$brainwt, ms$sleep_total, log="x")
+```
+
+```{r}
+#which() and filtering
+ms$sleep_total[which(ms$sleep_total>18)[1]] #select 1 from ms$sleep_total where ms$sleep_total>18
+which(ms$sleep_total>18)
+ms$sleep_total[which(ms$sleep_total>18 & ms$sleep_rem<3)]
+```
+
+```{r}
+#sort() and order()
+sort(ms$sleep_total)
+order(ms$sleep_total)
+ms$sleep_total[order(ms$sleep_total)]
+```
+
+```{r}
+#rank()
+rank(c(1,2,2,3))
+rank(ms$sleep_total)
+```
+
+```{r}
+#match()
+match(c("Cow", "Owl Monkey", "Cheetah"), ms$name)
+idx <- match(c("Cow", "Owl Monkey", "Cheetah"), ms$name)
+ms[idx,]
+#Row number for cotton rat
+match(c("Cotton rat"), ms$name)
+```
+
+```{r}
+#factor
+vec <- c("red", "blue", "green")
+fac <- factor(vec)
+levels(fac)
+levels(vec)
+vec == "blue"
+
+cnt <- ms$order[which(ms$order=="Rodentia")]
+```
+
+```{r}
+#split() group former into list by latter arg
+s <- split(ms$sleep_total, ms$order)
+s2 <- split(ms$sleep_total, ms$vore)
+#[[]] to use list
+s[[17]]
+s[["Rodentia"]]
+s[[17]]
+s[[1]]
+s2[[1]]
+```
+
+```{r}
+#mean hours of rodents
+rodentia <- s[["Rodentia"]]
+mean(rodentia)
+```
+
+```{r}
+#lapply() to return a list
+lapply(s, mean)
+#sapply() tries to simplify and return a vector
+sapply(s, mean)
+#tapply() to split() and sapply() at once (requires 3 args)
+tapply(ms$sleep_total, ms$order, mean)
+
+#stdev of total hours of sleep for the Primates order
+tapply(ms$sleep_total, ms$order, sd)["Primates"]
+```
+
+EOL
